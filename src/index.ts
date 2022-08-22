@@ -1,5 +1,6 @@
 import { ethers, BigNumberish } from 'ethers';
 
+export { default as WMerkleTree } from './WMerkleTree';
 export type FunctionParameter = {
   name?: string;
   type: string;

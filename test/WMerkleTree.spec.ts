@@ -1,5 +1,5 @@
 import { Leaf, LeafSignature } from '../src';
-import WMerkleTree from '../src/WMerkleTree';
+import { WMerkleTree } from '../src/index';
 
 describe('WMerkleTree', () => {
   it('Should correctly hash leaf', () => {

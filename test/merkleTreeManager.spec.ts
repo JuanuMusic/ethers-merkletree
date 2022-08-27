@@ -1,5 +1,10 @@
 import { ethers } from 'ethers';
-import mtManager, { Leaf, LeafSignature } from '../src';
+import mtManager, {
+  Leaf,
+  LeafSignature,
+  LeafSourceObject,
+  ObjectPropertyValue,
+} from '../src';
 
 describe('merkleTreeManager', () => {
   describe('blankFromType', () => {
@@ -67,19 +72,75 @@ describe('merkleTreeManager', () => {
 
   describe('hashLeaf', () => {
     it('Should correctly hash any valid leaf', () => {
+      const signature: LeafSignature = [
+        { type: 'string', name: 'helloMessage' },
+        { type: 'address', name: 'recipient' },
+        { type: 'bytes32', name: 'data' },
+      ];
+
       const leaf: Leaf = [
         'hello',
         '0x7463996F63da6941F0d79487598d320b57fC0ffB',
         ethers.utils.formatBytes32String('wagmi'),
       ];
 
-      const hash = mtManager.hashLeaf(leaf, [
-        { type: 'string' },
-        { type: 'address' },
-        { type: 'bytes32' },
-      ]);
+      const hash = mtManager.hashLeaf(leaf, signature);
       expect(hash).toEqual(
         '0x9520cddcc5c2c2d3db96563c4f3d57cb8ccc9202e10ce39c127cbf9a0db2197e'
+      );
+    });
+  });
+
+  describe('toLeaf', () => {
+    it('Should correctly convert to leaf object', () => {
+      const signature: LeafSignature = [
+        { type: 'string', name: 'stringProp' },
+        { type: 'address', name: 'addressProp' },
+        { type: 'bytes32', name: 'bytes32Prop' },
+      ];
+
+      const leafObject: ObjectPropertyValue = {
+        stringProp: 'hello',
+        addressProp: '0x7463996F63da6941F0d79487598d320b57fC0ffB',
+        bytes32Prop: ethers.utils.formatBytes32String('wagmi'),
+      };
+
+      const leaf: Leaf = mtManager.toLeaf(leafObject, signature);
+      expect(leaf).toEqual([
+        leafObject.stringProp,
+        leafObject.addressProp,
+        leafObject.bytes32Prop,
+      ]);
+    });
+
+    it('Should fail hash with non existing property on object', () => {
+      const signature: LeafSignature = [
+        { type: 'string', name: 'stringProp' },
+        { type: 'address', name: 'addressProp' },
+        { type: 'bytes32', name: 'madeUpProp' },
+      ];
+
+      const leafObject: ObjectPropertyValue = {
+        stringProp: 'hello',
+        addressProp: '0x7463996F63da6941F0d79487598d320b57fC0ffB',
+        bytes32Property: ethers.utils.formatBytes32String('wagmi'),
+      };
+
+      expect(() => mtManager.toLeaf(leafObject, signature)).toThrow();
+    });
+
+    it('Should throw error when leaf values dont match length of leaf signature', () => {
+      const leafSignature: LeafSignature = [
+        { type: 'address', name: 'addressProp' },
+        { type: 'uint256', name: 'uintProp' },
+      ];
+
+      const sourceItem = {
+        addressProp: '0x68AC5eE798Ac6F6B0A42F9b34753C9FD26dbdeA3',
+      };
+
+      expect(() => mtManager.toLeaf(sourceItem, leafSignature)).toThrow(
+        'Source item has less attributes than Leaf Signature parameters.'
       );
     });
   });

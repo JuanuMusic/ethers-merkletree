@@ -1,67 +1,65 @@
 import keccak256 from 'keccak256';
 import MerkleTree from 'merkletreejs';
-import mtManager, { Leaf, LeafSignature } from '.';
+import mtManager, { Leaf, LeafSignature, LeafSourceObject } from '.';
 
-export default class WMerkleTree {
+export default class WMerkleTree<TLeafSource extends LeafSourceObject> {
   private _baseTree: MerkleTree;
-  private _originalValues: Leaf[];
+  private _leaves: Leaf[];
+  private _sourceItems: TLeafSource[];
   private _signature: LeafSignature;
 
-  private constructor(
-    baseTree: MerkleTree,
-    originalValues: Leaf[],
-    signature: LeafSignature
+  constructor(
+    sourceItems: TLeafSource[],
+    signature: LeafSignature,
+    throwOnUneven?: boolean
   ) {
-    this._baseTree = baseTree;
-    this._originalValues = originalValues;
-    this._signature = signature;
-  }
+    if (sourceItems.length === 0) throw new Error('Invalid empty whitelist');
+    this._sourceItems = sourceItems;
 
-  /**
-   * Build a merkle tree from a list of leaves
-   * @param leaves Array of leaves to build the tree from
-   * @returns Merkle tree object.
-   */
-  static from(
-    leaves: Leaf[],
-    leafSignature: LeafSignature,
-    throwOnUneven = false
-  ): WMerkleTree {
-    if (leaves.length === 0) throw new Error('Invalid empty whitelist');
-    if (leaves.length % 2 !== 0) {
+    if (signature.length == 0)
+      throw new Error('Invalid empty signature definition');
+    this._signature = signature;
+
+    this._leaves = sourceItems.map(i => mtManager.toLeaf(i, signature));
+
+    if (this._leaves.length % 2 !== 0) {
       if (throwOnUneven) throw new Error('whitelist entries must be even');
       else {
-        leaves.push(mtManager.getBlankLeaf(leafSignature));
+        this._leaves.push(mtManager.getBlankLeaf(signature));
       }
     }
 
     const merkleTree = new MerkleTree(
-      leaves.map(l => mtManager.hashLeaf(l, leafSignature)),
+      this._leaves.map(l => mtManager.hashLeaf(l, this._signature)),
       keccak256,
       { sortPairs: true, sortLeaves: false }
     );
 
-    return new WMerkleTree(merkleTree, leaves, leafSignature);
+    this._baseTree = merkleTree;
   }
 
   get merkleTree(): MerkleTree {
     return this._baseTree;
   }
 
-  get originalValues(): Leaf[] {
-    return this._originalValues;
+  get leaves(): Leaf[] {
+    return this._leaves;
+  }
+
+  get sourceItems(): TLeafSource[] {
+    return this._sourceItems;
   }
 
   get signature(): LeafSignature {
     return this._signature;
   }
 
-  hashLeaf(leaf: Leaf): string {
-    return mtManager.hashLeaf(leaf, this._signature);
+  hashLeafIndex(leafIndex: number): string {
+    return mtManager.hashLeaf(this.leaves[leafIndex], this._signature);
   }
 
-  getHexProof(leaf: Leaf): string[] {
-    return this._baseTree.getHexProof(this.hashLeaf(leaf));
+  getHexProof(leafIndex: number): string[] {
+    return this._baseTree.getHexProof(this.hashLeafIndex(leafIndex));
   }
 
   getHexRoot(): string {

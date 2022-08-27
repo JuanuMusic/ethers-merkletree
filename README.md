@@ -24,7 +24,6 @@ A smart contract that uses a Merkle Tree for validating an account:
 ```solidity
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
-
 contract PermissionedSalutation {
     event Hello(string);
     using MerkleProof for bytes32[];
@@ -66,8 +65,7 @@ const myAllowList: LeafSourceObject[] = [
 ```
 
 Describe the items structure mapping it to the solidity types on the contract's parameters of function `sayHello`.
-For each of the parameters, define the name and the solicity type.
-Names MUST be exact to the source items, but there is no constrains for using the same names on the solidity contract, although I highly recomment it for making code easyly readable.
+For each of the parameters, define the name and the solicity type.Names MUST be exact to the source items, but there is no constrains for using the same names on the solidity contract, although I highly recomment it for making code easyly readable.
 
 ```ts
 const leafSignature: LeafSignature = [

@@ -21,7 +21,7 @@ A smart contract that uses a Merkle Tree for validating an account:
 - Both values must be pased, and a `proof` that they are the right values.
 - If proof is correctly verified, the event `Hello(to)` is emited.
 
-````sol
+```solidity
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 
@@ -41,10 +41,12 @@ contract PermissionedSalutation {
         emit Hello(to);
     }
 }
-``
+```
 
 ## Typescript Implementation
+
 Import WMerkleTree (and types if needed)
+
 ```ts
 import { WMerkleTree, LeafSignature } from 'ethers-merkletree';`
 ```
@@ -66,31 +68,35 @@ const myAllowList: LeafSourceObject[] = [
 Describe the items structure mapping it to the solidity types on the contract's parameters of function `sayHello`.
 For each of the parameters, define the name and the solicity type.
 Names MUST be exact to the source items, but there is no constrains for using the same names on the solidity contract, although I highly recomment it for making code easyly readable.
+
 ```ts
 const leafSignature: LeafSignature = [
-      { type: 'address', name: 'to' },
-      { type: 'uint256', name: 'price' },
-    ];
+  { type: 'address', name: 'to' },
+  { type: 'uint256', name: 'price' },
+];
 ```
 
 Create a new instance of `WMerkleTree` (Wrapped Merkle Tree _suggestions accepted_) passing the `leafSignature` and `myAllowList`
+
 ```ts
 const merkleTree = new WMerkleTree(myAllowList, leafSignature);
 ```
 
 You can now get the Merkle root of the Tree.
+
 ```ts
 const merkleRoot = merkleTree.getHexRoot();
 await permissionedSalutationContract.setMerkleRoot(merkleRoot);
 ```
 
 And request to say hello to Second item on the list, with the evidence that the address can receive a Hello
+
 ```ts
 // Generate the proof of item 1 on the array
 const merkleProof = merkleTree.getHexProof(1);
 const allowedRecipient = myAllowList[1];
 await permissionedSalutationContract.sayHello(item.to item.price, merkleProof, {value: item.price});
-````
+```
 
 ## API
 

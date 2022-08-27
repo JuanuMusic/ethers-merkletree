@@ -55,4 +55,21 @@ describe('WMerkleTree', () => {
       '0x52dc182ef0157bfbd62f3ece237ca9bd52d942018b00284d30c4afdd91c94623',
     ]);
   });
+
+  it('Should throw error when leaf values dont match length of leaf signature', () => {
+    const leafSignature: LeafSignature = [
+      { type: 'address' },
+      { type: 'uint256' },
+      { type: 'bool' },
+    ];
+    const leaves: Leaf[] = [
+      ['0x68AC5eE798Ac6F6B0A42F9b34753C9FD26dbdeA3', true],
+      ['0xCf43D97Ed9EC1d458cA69551C021Bb157314E0d7', true],
+      ['0x8C6Dce95936c532f6d7e3f150b82D359b3938733', false],
+    ];
+
+    expect(() => WMerkleTree.from(leaves, leafSignature)).toThrow(
+      'Leaf values do not match length of Leaf Signature parameters.'
+    );
+  });
 });

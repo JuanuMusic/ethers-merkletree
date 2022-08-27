@@ -65,7 +65,7 @@ export default {
   hashLeaf(leaf: Leaf, leafSignature: LeafSignature): string {
     if (leaf.length != leafSignature.length)
       throw new Error(
-        'Leaf values does not match length of Leaf Signature parameters.'
+        'Leaf values do not match length of Leaf Signature parameters.'
       );
     return (
       '0x' +

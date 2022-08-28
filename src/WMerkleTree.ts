@@ -29,13 +29,12 @@ export default class WMerkleTree<TLeafSource extends LeafSourceObject> {
       }
     }
 
-    const merkleTree = new MerkleTree(
+    // Initialize base merkle tree
+    this._baseTree = new MerkleTree(
       this._leaves.map(l => mtManager.hashLeaf(l, this._signature)),
       keccak256,
       { sortPairs: true, sortLeaves: false }
     );
-
-    this._baseTree = merkleTree;
   }
 
   get merkleTree(): MerkleTree {

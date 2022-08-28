@@ -1,4 +1,4 @@
-import { ethers, BigNumberish } from 'ethers';
+import { ethers, BigNumberish, BigNumber } from 'ethers';
 
 export { default as WMerkleTree } from './WMerkleTree';
 
@@ -132,7 +132,9 @@ export default {
             functionParameter.name
         );
 
-      retVal.push(sourceItem[functionParameter.name]);
+      let value = sourceItem[functionParameter.name];
+      if (BigNumber.isBigNumber(value)) BigNumber.from(value); // Make a new instance.
+      retVal.push(value);
     }
 
     return retVal;

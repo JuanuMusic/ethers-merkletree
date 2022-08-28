@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
 import mtManager, {
-  Leaf,
   LeafSignature,
-  LeafSourceObject,
+  LeafValues,
   ObjectPropertyValue,
+  ObjectValue,
 } from '../src';
 
 describe('merkleTreeManager', () => {
@@ -78,13 +78,13 @@ describe('merkleTreeManager', () => {
         { type: 'bytes32', name: 'data' },
       ];
 
-      const leaf: Leaf = [
+      const values: LeafValues = [
         'hello',
         '0x7463996F63da6941F0d79487598d320b57fC0ffB',
         ethers.utils.formatBytes32String('wagmi'),
       ];
 
-      const hash = mtManager.hashLeaf(leaf, signature);
+      const hash = mtManager.hashLeaf(values, signature);
       expect(hash).toEqual(
         '0x9520cddcc5c2c2d3db96563c4f3d57cb8ccc9202e10ce39c127cbf9a0db2197e'
       );
@@ -105,10 +105,13 @@ describe('merkleTreeManager', () => {
         bytes32Prop: ethers.utils.formatBytes32String('wagmi'),
       };
 
-      const leaf: Leaf = mtManager.getObjectValues(leafObject, signature);
+      const values: ObjectValue[] = mtManager.getObjectValues(
+        leafObject,
+        signature
+      );
       console.log('LEAF OBJECT', leafObject);
-      console.log('LEAF', leaf);
-      expect(leaf).toEqual([
+      console.log('LEAF', values);
+      expect(values).toEqual([
         leafObject.stringProp,
         leafObject.addressProp,
         leafObject.bytes32Prop,

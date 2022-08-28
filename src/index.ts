@@ -46,6 +46,7 @@ export type LeafSourceObject = {
 };
 
 export type ObjectValue = string | BigNumberish | number | boolean;
+export type LeafValues = ObjectValue[];
 
 const BYTE_TYPES = [
   'bytes32',
@@ -86,8 +87,8 @@ export default {
       throw new Error(`Unknown type ${type} converting  to blank`);
     }
   },
-  getBlankLeaf(leafSignature: LeafSignature): Leaf {
-    const retVal: ObjectValue[] = leafSignature.map(l =>
+  getBlankLeaf(leafSignature: LeafSignature): LeafValues {
+    const retVal: LeafValues = leafSignature.map(l =>
       this.blankFromType(l.type)
     );
 
@@ -95,17 +96,17 @@ export default {
   },
   /**
    * Hash a leaf to be used in the merkle tree
-   * @param leaf Leaf to hash
+   * @param values Leaf to hash
    * @returns Hash of the leaf
    */
-  hashLeaf(leaf: Leaf, signature: LeafSignature): string {
+  hashLeaf(values: ObjectValue[], signature: LeafSignature): string {
     return (
       '0x' +
       Buffer.from(
         ethers.utils
           .solidityKeccak256(
             signature.map(p => p.type), // Types
-            leaf
+            values
           )
           .slice(2),
         'hex'
@@ -116,7 +117,7 @@ export default {
   getObjectValues(
     sourceItem: LeafSourceObject,
     signature: LeafSignature
-  ): ObjectValue[] {
+  ): LeafValues {
     const objectKeys = Object.keys(sourceItem);
     if (signature.length > objectKeys.length)
       throw new Error(

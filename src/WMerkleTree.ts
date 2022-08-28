@@ -1,6 +1,11 @@
 import keccak256 from 'keccak256';
 import MerkleTree from 'merkletreejs';
-import mtManager, { Leaf, LeafSignature, LeafSourceObject } from '.';
+import mtManager, {
+  LeafSignature,
+  LeafSourceObject,
+  LeafValues,
+  ObjectValue,
+} from '.';
 
 export type WMerkleTreeOptions = {
   sortPairs?: boolean;
@@ -10,7 +15,7 @@ export type WMerkleTreeOptions = {
 
 export default class WMerkleTree<TLeafSource extends LeafSourceObject> {
   private _baseTree: MerkleTree;
-  private _leaves: Leaf[];
+  private _leaves: LeafValues[];
   private _sourceItems: TLeafSource[];
   private _signature: LeafSignature;
 
@@ -54,7 +59,7 @@ export default class WMerkleTree<TLeafSource extends LeafSourceObject> {
     return this._baseTree;
   }
 
-  get leaves(): Leaf[] {
+  get leaves(): LeafValues[] {
     return this._leaves;
   }
 

@@ -101,7 +101,7 @@ describe('merkleTreeManager', () => {
 
       const leafObject: ObjectPropertyValue = {
         stringProp: 'hello',
-        addressProp: '0x7463996F63da6941F0d79487598d320b57fC0ffB'.toLowerCase(),
+        addressProp: '0x7463996F63da6941F0d79487598d320b57fC0ffB',
         bytes32Prop: ethers.utils.formatBytes32String('wagmi'),
       };
 

@@ -106,14 +106,7 @@ export default {
         ethers.utils
           .solidityKeccak256(
             signature.map(p => p.type), // Types
-            leaf.map((v, index) => {
-              let retVal = v.toString();
-              if (signature[index].type === 'address') {
-                retVal = retVal.toLowerCase();
-              }
-
-              return retVal;
-            })
+            leaf.map((v, index) => v.toString())
           )
           .slice(2),
         'hex'
@@ -136,12 +129,7 @@ export default {
             functionParameter.name
         );
 
-      let stringValue = sourceItem[functionParameter.name].toString();
-      if (functionParameter.type === 'address') {
-        stringValue = stringValue.toLowerCase();
-      }
-
-      retVal.push(stringValue);
+      retVal.push(sourceItem[functionParameter.name].toString());
     }
 
     return retVal;

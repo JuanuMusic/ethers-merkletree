@@ -106,7 +106,7 @@ export default {
         ethers.utils
           .solidityKeccak256(
             signature.map(p => p.type), // Types
-            leaf.map((v, index) => v.toString())
+            leaf
           )
           .slice(2),
         'hex'
@@ -129,7 +129,7 @@ export default {
             functionParameter.name
         );
 
-      retVal.push(sourceItem[functionParameter.name].toString());
+      retVal.push(sourceItem[functionParameter.name]);
     }
 
     return retVal;

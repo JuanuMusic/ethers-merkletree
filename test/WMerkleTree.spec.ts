@@ -86,7 +86,7 @@ describe('WMerkleTree', () => {
     const proof = merkleTree.getHexProof(1);
     expect(proof).toEqual([
       '0x3fe7670925e8ad8766b6e2e8c398d69c341c18f6e224cd59313b1cd56f9d8bb7',
-      '0xdc1f56c2fd49f7cb8bbe918fa6d23f591e1a0bdd420af2808ba27074b2fd0580',
+      '0x52dc182ef0157bfbd62f3ece237ca9bd52d942018b00284d30c4afdd91c94623',
     ]);
   });
 

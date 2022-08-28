@@ -101,11 +101,13 @@ describe('merkleTreeManager', () => {
 
       const leafObject: ObjectPropertyValue = {
         stringProp: 'hello',
-        addressProp: '0x7463996F63da6941F0d79487598d320b57fC0ffB',
+        addressProp: '0x7463996F63da6941F0d79487598d320b57fC0ffB'.toLowerCase(),
         bytes32Prop: ethers.utils.formatBytes32String('wagmi'),
       };
 
       const leaf: Leaf = mtManager.toLeaf(leafObject, signature);
+      console.log('LEAF OBJECT', leafObject);
+      console.log('LEAF', leaf);
       expect(leaf).toEqual([
         leafObject.stringProp,
         leafObject.addressProp,

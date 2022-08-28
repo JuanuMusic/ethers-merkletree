@@ -2,6 +2,12 @@ import keccak256 from 'keccak256';
 import MerkleTree from 'merkletreejs';
 import mtManager, { Leaf, LeafSignature, LeafSourceObject } from '.';
 
+export type WMerkleTreeOptions = {
+  sortPairs?: boolean;
+  sortLeaves?: boolean;
+  throwOnUneven?: boolean;
+};
+
 export default class WMerkleTree<TLeafSource extends LeafSourceObject> {
   private _baseTree: MerkleTree;
   private _leaves: Leaf[];
@@ -11,7 +17,11 @@ export default class WMerkleTree<TLeafSource extends LeafSourceObject> {
   constructor(
     sourceItems: TLeafSource[],
     signature: LeafSignature,
-    throwOnUneven?: boolean
+    options: WMerkleTreeOptions = {
+      sortPairs: true,
+      sortLeaves: false,
+      throwOnUneven: false,
+    }
   ) {
     if (sourceItems.length === 0) throw new Error('Invalid empty whitelist');
     this._sourceItems = sourceItems;
@@ -23,7 +33,8 @@ export default class WMerkleTree<TLeafSource extends LeafSourceObject> {
     this._leaves = sourceItems.map(i => mtManager.toLeaf(i, signature));
 
     if (this._leaves.length % 2 !== 0) {
-      if (throwOnUneven) throw new Error('whitelist entries must be even');
+      if (options.throwOnUneven)
+        throw new Error('whitelist entries must be even');
       else {
         this._leaves.push(mtManager.getBlankLeaf(signature));
       }
@@ -33,7 +44,7 @@ export default class WMerkleTree<TLeafSource extends LeafSourceObject> {
     this._baseTree = new MerkleTree(
       this._leaves.map(l => mtManager.hashLeaf(l, this._signature)),
       keccak256,
-      { sortPairs: true, sortLeaves: false }
+      { sortPairs: options.sortPairs, sortLeaves: options.sortLeaves }
     );
   }
 

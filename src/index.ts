@@ -106,7 +106,14 @@ export default {
         ethers.utils
           .solidityKeccak256(
             signature.map(p => p.type), // Types
-            leaf.map(v => v.toString())
+            leaf.map((v, index) => {
+              let retVal = v.toString();
+              if (signature[index].type === 'address') {
+                retVal = retVal.toLowerCase();
+              }
+
+              return retVal;
+            })
           )
           .slice(2),
         'hex'
@@ -128,7 +135,13 @@ export default {
           'Source object does not contain attribute with name ' +
             functionParameter.name
         );
-      retVal.push(sourceItem[functionParameter.name]);
+
+      let stringValue = sourceItem[functionParameter.name].toString();
+      if (functionParameter.type === 'address') {
+        stringValue = stringValue.toLowerCase();
+      }
+
+      retVal.push(stringValue);
     }
 
     return retVal;

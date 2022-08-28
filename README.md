@@ -35,7 +35,7 @@ contract PermissionedSalutation {
 
     function sayHello(address to, uint256 price, bytes32[] memory proof) public {
         bytes32 leaf = keccak256(abi.encodePacked(to, price));
-        require(proof.verify(rootByStage[curStage], leaf), "invalid proof");
+        require(proof.verify(merkleRoot, leaf), "invalid proof");
         require(price = msg.value, "invalid price paid");
         emit Hello(to);
     }
@@ -54,10 +54,10 @@ Mock of a list. You should be generating this on your own.
 
 ```ts
 const myAllowList: LeafSourceObject[] = [
-    { to: '0x68AC5eE798Ac6F6B0A42F9b34753C9FD26dbdeA3',
+    { to: '0x68AC5eE798Ac6F6B0A42F9b3abc3C9FD26dbdeA6',
       price: ethers.utils.formatEther("1"),
     },
-    { to: '0xCf43D97Ed9EC1d458cA69551C021Bb157314E0d7',
+    { to: '0xCf43D97Ed9EC1d458cA69551bcd1Bb157314E0d8',
       price: price: ethers.utils.formatEther("1")
     }
   ];

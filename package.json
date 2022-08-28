@@ -1,6 +1,6 @@
 {
   "name": "ethers-merkletree",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A library for interacting with Merkle Trees powereed by ethers.js and merkletreejs",
   "main": "./lib/src/index.js",
   "files": [

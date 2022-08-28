@@ -37,7 +37,6 @@ export type FunctionParameter = {
 
 export type LeafSignature = FunctionParameter[];
 
-export type Leaf = ObjectValue[];
 export type ObjectPropertyValue = {
   [key: string]: ObjectValue;
 };
@@ -114,14 +113,17 @@ export default {
     );
   },
 
-  toLeaf(sourceItem: LeafSourceObject, signature: LeafSignature): Leaf {
+  getObjectValues(
+    sourceItem: LeafSourceObject,
+    signature: LeafSignature
+  ): ObjectValue[] {
     const objectKeys = Object.keys(sourceItem);
     if (signature.length > objectKeys.length)
       throw new Error(
         'Source item has less attributes than Leaf Signature parameters.'
       );
 
-    let retVal: Leaf = [];
+    let retVal: ObjectValue[] = [];
     for (let functionParameter of signature) {
       if (!objectKeys.includes(functionParameter.name))
         throw new Error(

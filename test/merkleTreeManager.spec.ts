@@ -91,7 +91,7 @@ describe('merkleTreeManager', () => {
     });
   });
 
-  describe('toLeaf', () => {
+  describe('getObjectValues', () => {
     it('Should correctly convert to leaf object', () => {
       const signature: LeafSignature = [
         { type: 'string', name: 'stringProp' },
@@ -105,7 +105,7 @@ describe('merkleTreeManager', () => {
         bytes32Prop: ethers.utils.formatBytes32String('wagmi'),
       };
 
-      const leaf: Leaf = mtManager.toLeaf(leafObject, signature);
+      const leaf: Leaf = mtManager.getObjectValues(leafObject, signature);
       console.log('LEAF OBJECT', leafObject);
       console.log('LEAF', leaf);
       expect(leaf).toEqual([
@@ -128,7 +128,7 @@ describe('merkleTreeManager', () => {
         bytes32Property: ethers.utils.formatBytes32String('wagmi'),
       };
 
-      expect(() => mtManager.toLeaf(leafObject, signature)).toThrow();
+      expect(() => mtManager.getObjectValues(leafObject, signature)).toThrow();
     });
 
     it('Should throw error when leaf values dont match length of leaf signature', () => {
@@ -141,7 +141,9 @@ describe('merkleTreeManager', () => {
         addressProp: '0x68AC5eE798Ac6F6B0A42F9b34753C9FD26dbdeA3',
       };
 
-      expect(() => mtManager.toLeaf(sourceItem, leafSignature)).toThrow(
+      expect(() =>
+        mtManager.getObjectValues(sourceItem, leafSignature)
+      ).toThrow(
         'Source item has less attributes than Leaf Signature parameters.'
       );
     });

@@ -30,7 +30,9 @@ export default class WMerkleTree<TLeafSource extends LeafSourceObject> {
       throw new Error('Invalid empty signature definition');
     this._signature = signature;
 
-    this._leaves = sourceItems.map(i => mtManager.toLeaf(i, signature));
+    this._leaves = sourceItems.map(i =>
+      mtManager.getObjectValues(i, signature)
+    );
 
     if (this._leaves.length % 2 !== 0) {
       if (options.throwOnUneven)
